@@ -1,0 +1,10 @@
+GOOGLE_API_KEY=AIzaS.....
+GOOGLE_CLOUD_PROJECT= .....
+TAVILY_API_KEY=tvly-......
+DB_HOST="......"
+DB_PORT="...."
+DB_USER = "...."
+DB_PASSWORD = "......"
+DB_NAME = "LLMOPS"
+INSTANCE_CONNECTION_NAME = "........"
+

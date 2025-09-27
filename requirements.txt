@@ -1,0 +1,10 @@
+pandas
+google-generativeai
+streamlit
+sqlalchemy
+google-cloud-sql-connector[pymysql]
+python-dotenv
+pydantic
+google-generativeai
+tavily-python
+    
