@@ -7,4 +7,4 @@ python-dotenv
 pydantic
 google-generativeai
 tavily-python
-    
+pdfplumber
