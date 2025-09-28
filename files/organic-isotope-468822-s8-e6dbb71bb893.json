@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "organic-isotope-468822-s8",
+  "private_key_id": "e6dbb71bb8938c5799fce388b5d16520dbbd55ea",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCmH/NvyhL8YHyF\nqU9r8ZOkeOylZcmRiIw3RdavbejxIdZSGBMMoL6XuL1OvPNM+mNwOEvaxM3tu8jM\neUAZALjNgygL9XIQ12yI61HP/ado3n2FwUMTFALk44mesmjl7eQg4f6EAR/rWZ4M\niKPPOx7Jq7fZ8KUvAUfMUVPU4ca29KzWnzDk7d6JTIxqbACzpmtDINM4Vb39iHWe\ntRHxQfWveBcJfZqEDiTfKJ4T0g6sdf5eRo3Czm21tBc6QFViTahNLWx+dCkmHzZy\naWX9GO7rsyFztJQi6UH4JC4CBVxs9Pslr0/pQs9u0FSTPC10fQSB/UV2cj66lViC\nkb0Lx4nXAgMBAAECggEAK7rCZp1vZP7zGG4qqXQElOl+BcXnCwfCPTSFoFVS2dK5\n649JyGux8Bdhwc3MT+mjbmFrWlGvEZL6dxS90jcV7odFbex008kZWWt0dEdFn73d\nle17PhTo9B6PVfaJ1WjLQfqreE0hfV7wU0VOtZjO8HBi65xEpzxzjW2lHyc1m2gd\nL1GAsymPcL11fIHbnTlGZys/rU95txNob5zH8Viku2QlArIldxuPH7yUCyFVT7ik\nLTB/tQkIWPzupHGpLjiUsotgxN95D0D8mEefKkFRIqmmd4oLABmAAfvFnGMUGCGz\nJi7zm03sPG3Gwee9DS39DejUviBh4mTu/cRfJW4CQQKBgQDaHmWgRXrvFAlgAGYn\n1vM54uOqPgNV0XmrREOATckfGgeILL29Ax+PqyMem+6YHoEr9BBwItifx3+6V2hJ\n+bknWV3h0TUcoRfgzOmsKRxP1a8OP3gK5++kRTXQ6+SsQSM7sOZL/y1ZKr9oxTud\ncD9+SVHup5jpMLJmDpD5VyK3FwKBgQDC+eSy4mKYhmki7q5UoqpHriKwZnnOCwYQ\nlHZHkP0Iad+UZG4gx/1SfSG0CI0ZbB20qD6TXd6t2uT8TIwO4fYrclCFKQRnsFns\nxA6mvTk91kbk+CyezfkaOwK6qR907+ELAx1hOFS6iy0Ab5/XOV8vCsQB1Nl/SOw8\n+RskgVl7QQKBgQDPyAspnWaZn626nUazhwmWyDP2tjJ5Kx7LbzEaZX9FOIeaSnzJ\nNNN5Ch9fhk3I7a5Bj7OlDxzrQKHFgoSfi9u8x14uwxvkVPWpOasUTOlih/3GBeI2\nCXJ5O1Ej38Or8DU/JKqOFN0/RwCmLtU2inqBtBjvzwpUggZAQHoMfNxeKwKBgQCQ\nLVXOadVa0FnCeRj0gOzF4KDKLJz5nfE4JXBpb2+M3y1zf+hn2Tsb2mgnxwL/v5Ef\n3CGZu5pEmU8mujv/bVwpuHiOX0xgmGmGyVvENLy1W1RFULc+HzWLDgPwn8shH5kc\nGYuKLquI3g3C+sgJ0OTv1lgmuoyysOvwEozdq8DNgQKBgBoH1ileLkTrtGaLOOxQ\nizE7bldX1oncajXXhu/sy5WEFiI8BogdMVCXGPdqRtyUHAF4Q3OXSCkO06apOc8h\nRgNbcarT1X4/UamjBX+HIB02Lx3VU3rib0fU3wnghBSZMuVIIZRG/4bmC80T509J\nG4SYqWv2INoQlEOiIco6DQ2y\n-----END PRIVATE KEY-----\n",
+  "client_email": "llmops@organic-isotope-468822-s8.iam.gserviceaccount.com",
+  "client_id": "105507703562409175341",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/llmops%40organic-isotope-468822-s8.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

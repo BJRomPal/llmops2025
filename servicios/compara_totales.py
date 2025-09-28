@@ -1,10 +1,4 @@
 import pandas as pd
-from extrae_csv import extrae_csv
-from extrae_pdf import extraer_total_de_factura
-
-df = extrae_csv('../files/test.csv')
-total = extraer_total_de_factura('../files/factura_incorrecta.pdf')
-
 
 def compara_totales(total_pdf, df_csv):
     """
