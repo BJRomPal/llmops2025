@@ -29,7 +29,4 @@ def compara_totales(total_pdf, df_csv):
     else:
         print("❌ Los totales NO coinciden.")
         return False
-    
 
-resultado = compara_totales(total, df)
-print("Resultado de la comparación:", resultado)
