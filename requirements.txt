@@ -2,10 +2,9 @@ pandas
 google-generativeai
 streamlit
 sqlalchemy
-google-cloud-sql-connector[pymysql]
+cloud-sql-python-connector[pymysql]
 python-dotenv
 pydantic
-google-generativeai
 tavily-python
 pdfplumber
 google-cloud-storage
