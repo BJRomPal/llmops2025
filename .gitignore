@@ -1,6 +1,6 @@
 .env
 *.json
-__pycache__/
+servicios/__pycache__/
 *.pyc
 *.pyo
 *.pyd

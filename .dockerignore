@@ -4,7 +4,7 @@ venv
 ENV/
 
 # Archivos de caché de Python
-__pycache__/
+servicios/__pycache__/
 *.pyc
 *.pyo
 *.pyd
