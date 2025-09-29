@@ -1,0 +1,14 @@
+# Archivos de entorno virtual
+.venv
+venv
+ENV/
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Otros
+.git
+.gitignore
