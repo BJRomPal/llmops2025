@@ -9,6 +9,8 @@ import tempfile
 import os
 import dotenv
 import google.auth
+from servicios.busquedallm import realiza_busqueda_llm
+from servicios.db.database_operations import insert_scales_data
 
 dotenv.load_dotenv()
 
@@ -35,10 +37,21 @@ def upload_to_gcs(bucket_name, file_object, destination_blob_name):
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(layout="wide")
+st.title("Dashboard de Análisis de Facturas 📄🔍")
 
-# Inicializar el estado de sesión para el botón de análisis
+# --- INICIALIZACIÓN DEL ESTADO DE SESIÓN ---
+# 'analysis_ready': controla la visibilidad del botón de análisis.
 if 'analysis_ready' not in st.session_state:
     st.session_state.analysis_ready = False
+# 'df_results': almacenará el dataframe del análisis.
+if 'df_results' not in st.session_state:
+    st.session_state.df_results = None
+# 'periodo': almacenará el periodo extraído del CSV.
+if 'periodo' not in st.session_state:
+    st.session_state.periodo = 0
+# 'csv_download_data': almacenará los datos del CSV listos para descargar.
+if 'csv_download_data' not in st.session_state:
+    st.session_state.csv_download_data = None
 
 # ======================================================================
 # BARRA LATERAL (SIDEBAR)
@@ -46,12 +59,17 @@ if 'analysis_ready' not in st.session_state:
 with st.sidebar:
     st.header("Carga de Archivos para Chequeo")
 
+    mensajes_sidebar = st.empty()
+
     pdf_file = st.file_uploader("Sube tu factura PDF", type="pdf")
     csv_file = st.file_uploader("Sube tu reporte CSV", type="csv")
 
     if st.button("Chequear Totales"):
         # Resetea el estado cada vez que se presiona el botón
         st.session_state.analysis_ready = False
+        st.session_state.df_results = None
+        st.session_state.periodo = 0
+        st.session_state.csv_download_data = None # Limpiar datos de descarga
         
         if pdf_file and csv_file:
             with st.spinner("Procesando archivos..."):
@@ -64,7 +82,8 @@ with st.sidebar:
                     csv_path = tmp_csv.name
 
                 total_factura_pdf = extrae_pdf.extraer_total_de_factura(pdf_path)
-                total_reporte_csv = extrae_csv.extrae_csv(csv_path)
+                total_reporte_csv, periodo = extrae_csv.extrae_csv(csv_path)
+                st.session_state.periodo = periodo # Guardar periodo en el estado
                 son_iguales = compara_totales.compara_totales(total_factura_pdf, total_reporte_csv)
                 
 
@@ -74,7 +93,7 @@ with st.sidebar:
                 
                 try:
                     # --- 1. Subir archivos a GCS ---
-                    st.info("Subiendo archivos a Cloud Storage...")
+                    st.info("Subiendo archivos a Cloud Storage e insertando registros en SQL...")
                     pdf_blob_name = f"facturas/{pdf_file.name}"
                     csv_blob_name = f"csv/{csv_file.name}"
                     
@@ -84,12 +103,8 @@ with st.sidebar:
                     if not (pdf_uploaded and csv_uploaded):
                         st.error("Falló la subida de archivos a GCS. Proceso abortado.")
                         
-                    st.success("¡Archivos subidos a GCS exitosamente!")
-
                     # --- 2. Cargar CSV a la base de datos ---
-                    st.info("Cargando datos en Cloud SQL...")
                     carga_csv.carga_invoices(csv_path)
-                    st.success("¡Datos cargados en la base de datos exitosamente!")
 
                     # --- 3. Actualizar estado de la app ---
                     st.session_state.analysis_ready = True
@@ -101,12 +116,13 @@ with st.sidebar:
                 finally:
                     # --- 4. Limpiar archivos temporales ---
                     # Este bloque se ejecuta siempre, haya error o no.
-                    st.info("Limpiando archivos temporales...")
                     if os.path.exists(pdf_path):
                         os.remove(pdf_path)
                     if os.path.exists(csv_path):
                         os.remove(csv_path)
-                    st.write("Limpieza finalizada.")
+                with mensajes_sidebar.container():
+                    st.success("¡Archivos subidos y Datos cargados en la base de datos exitosamente!")
+                    st.write("Limpieza de archivos temporales finalizada.")
 
             else:
                 st.error("No coinciden los totales entre Factura y soporte.")
@@ -114,12 +130,73 @@ with st.sidebar:
             st.warning("Por favor, asegúrate de subir ambos archivos.")
 
     # --- BOTÓN CONDICIONAL PARA INICIAR ANÁLISIS ---
-    # Este bloque solo se muestra si `analysis_ready` es True
     if st.session_state.analysis_ready:
         st.markdown("---") # Separador visual
         if st.button("🚀 Iniciar Análisis"):
-            with st.spinner("Iniciando análisis... (esto podría activar un Cloud Function, etc.)"):
-                # Aquí iría la lógica para iniciar tu análisis
+            mensajes_sidebar.empty()
+            with st.spinner("Realizando análisis con el modelo..."):
+                # Llama a la función y guarda el resultado en el estado de sesión
+                st.session_state.df_results = realiza_busqueda_llm(st.session_state.periodo)
+                st.session_state.csv_download_data = None # Limpiar datos de descarga previos
                 st.balloons()
-                st.success("¡Análisis iniciado!")
-                st.info("El proceso de análisis ha comenzado. Los resultados se mostrarán en el dashboard principal.")
+                st.success("¡Análisis completado!")
+
+# ======================================================================
+# PÁGINA PRINCIPAL
+# ======================================================================
+
+@st.cache_data
+def convert_df_to_csv(df):
+    """Convierte un DataFrame a un string de bytes en formato CSV."""
+    return df.to_csv(index=False).encode('utf-8')
+
+# --- NUEVA SECCIÓN: Mostrar los resultados del análisis ---
+# Esto se mostrará solo si el dataframe existe en el estado de sesión
+if st.session_state.df_results is not None:
+    st.subheader("Resultados del Análisis")
+    
+    # Columnas que quieres mostrar en la tabla
+    columnas_a_mostrar = [
+        'nombre_producto', 
+        'track_code', 
+        'peso_facturable', 
+        'tarifa_proveedor', 
+        'tarifa_real', 
+        'diferencia'
+    ]
+    
+    # Filtra el DataFrame para mostrar solo las columnas deseadas
+    df_filtrado = st.session_state.df_results[columnas_a_mostrar]
+    
+    # Muestra el DataFrame en la página principal
+    st.dataframe(df_filtrado)
+    
+    st.markdown("---")
+    
+# --- LÓGICA PARA EL BOTÓN DE DOBLE ACCIÓN ---
+
+    # 1. Botón principal que inicia la acción
+    if st.button("Guardar en BD y Generar Reporte"):
+        with st.spinner("Procesando..."):
+            insert_success = insert_scales_data(st.session_state.df_results)
+
+            if insert_success:
+                st.success("¡Datos guardados en la base de datos exitosamente!")
+                # Prepara los datos del CSV para la descarga y los guarda en el estado
+                st.session_state.csv_download_data = convert_df_to_csv(df_filtrado)
+            else:
+                st.error("Hubo un problema al guardar los datos en la base de datos.")
+                st.session_state.csv_download_data = None
+
+    # 2. El botón de descarga solo aparece si los datos del CSV están listos
+    #    Usamos .get() para acceder de forma segura y evitar el KeyError.
+    if st.session_state.get("csv_download_data") is not None:
+        file_name = f"periodo_{st.session_state.periodo}.csv"
+        st.download_button(
+           label="📥 Descargar Reporte CSV",
+           data=st.session_state.csv_download_data,
+           file_name=file_name,
+           mime='text/csv'
+        )
+else:
+    st.info("Carga los archivos en la barra lateral y ejecuta el análisis para ver los resultados aquí.")

@@ -9,10 +9,12 @@ def extrae_csv(ruta_csv):
 
     Returns:
         Un DataFrame con los datos del CSV.
+        El periodo extraído del CSV.
     """
     try:
         df = pd.read_csv(ruta_csv)
-        return df
+        periodo = df['periodo'].unique()[0]
+        return df, periodo
     except FileNotFoundError:
         print(f"❌ Error: El archivo no fue encontrado en la ruta: {ruta_csv}")
         return None

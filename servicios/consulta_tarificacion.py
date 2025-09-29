@@ -40,15 +40,15 @@ def trae_tarifas():
         # query and fetch invoices table
         result = db_conn.execute(sqlalchemy.text(f"SELECT * FROM tarifario"))
         columns = result.keys()
-        print(columns)
+
     
         # 2. Unpack all rows of data
         rows = result.fetchall()
-        print(rows[:5])
+
     
     # 3. Create the DataFrame
         df = pd.DataFrame(rows, columns=columns)
-        print(df.head())
+
         
     connector.close()
     return df
