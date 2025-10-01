@@ -1,14 +1,11 @@
 import streamlit as st
 import pandas as pd
 from google.cloud import storage
-import io
-import json 
-import altair as alt
 from servicios import extrae_csv, extrae_pdf, compara_totales, carga_csv
 import tempfile
 import os
 import dotenv
-import google.auth
+
 from servicios.busquedallm import realiza_busqueda_llm
 from servicios.db.database_operations import insert_scales_data
 
